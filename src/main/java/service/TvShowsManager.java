@@ -1,10 +1,10 @@
-package database;
+package service;
 
-import model.TvShow;
+import domain.TvShow;
 
 import java.util.List;
 
-public interface ShowsDBInterface {
+public interface TvShowsManager {
     void create (TvShow tvShow);
     TvShow read(Integer id);
     void update(TvShow tvShow);

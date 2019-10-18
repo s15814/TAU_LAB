@@ -1,4 +1,4 @@
-package model;
+package domain;
 
 public class TvShow {
     private int id;

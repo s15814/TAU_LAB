@@ -1,13 +1,13 @@
-package database;
+package service;
 
-import model.TvShow;
+import domain.TvShow;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ShowsDB implements ShowsDBInterface {
+public class TvShowsManagerImpl implements TvShowsManager {
     private Map<Integer, TvShow> tvShowMap = new HashMap<>();
 
     @Override
