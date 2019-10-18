@@ -60,6 +60,12 @@ public class ShowsDBTest {
         assertEquals("Lost", showsDBInterface.read(1).getTitle());
     }
 
+    @Test (expected = NullPointerException.class)
+    public void UpdateNonExistentTvShow () {
+        showsDBInterface.update(tvShow);
+    }
+
+
 
 
 
