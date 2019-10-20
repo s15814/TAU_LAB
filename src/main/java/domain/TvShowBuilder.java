@@ -31,13 +31,15 @@ public class TvShowBuilder {
         return this;
     }
 
-    public TvShow build() {
-        TvShow tvShow = new TvShow();
-        tvShow.setId(id);
-        tvShow.setTitle(title);
-        tvShow.setNumberOfSeasons(numberOfSeasons);
-        tvShow.setDirectorsName(directorsName);
-        tvShow.setPlatform(platform);
-        return tvShow;
+    public TvShowWithDates build() {
+        TvShowWithDates tvShowWithDates = new TvShowWithDates();
+        tvShowWithDates.setId(id);
+        tvShowWithDates.setTitle(title);
+        tvShowWithDates.setNumberOfSeasons(numberOfSeasons);
+        tvShowWithDates.setDirectorsName(directorsName);
+        tvShowWithDates.setPlatform(platform);
+        return tvShowWithDates;
     }
+
+
 }

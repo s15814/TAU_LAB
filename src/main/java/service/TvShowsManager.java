@@ -1,14 +1,14 @@
 package service;
 
-import domain.TvShow;
+import domain.TvShowWithDates;
 
 import java.util.List;
 
 public interface TvShowsManager {
-    void create (TvShow tvShow);
-    TvShow read(Integer id);
-    void update(TvShow tvShow);
-    void delete(TvShow tvShow);
-    List<TvShow> listAllSeries();
+    void create (TvShowWithDates tvShowWithDates);
+    TvShowWithDates read(Integer id);
+    void update(TvShowWithDates tvShowWithDates);
+    void delete(TvShowWithDates tvShowWithDates);
+    List<TvShowWithDates> listAllSeries();
 
 }

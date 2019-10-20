@@ -1,6 +1,6 @@
 package service;
 
-import domain.TvShow;
+import domain.TvShowWithDates;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,10 +8,10 @@ import java.util.List;
 import java.util.Map;
 
 public class TvShowsManagerImpl implements TvShowsManager {
-    private Map<Integer, TvShow> tvShowMap = new HashMap<>();
+    private Map<Integer, TvShowWithDates> tvShowMap = new HashMap<>();
 
     @Override
-    public void create(TvShow tvShow) {
+    public void create(TvShowWithDates tvShow) {
         if(tvShowMap.containsKey(tvShow.getId())) {
             throw new IllegalArgumentException("Tv Show with id: " + tvShow.getId() + " already exists.");
         } else {
@@ -21,7 +21,7 @@ public class TvShowsManagerImpl implements TvShowsManager {
     }
 
     @Override
-    public TvShow read(Integer id) {
+    public TvShowWithDates read(Integer id) {
         if (tvShowMap.containsKey(id)) {
             return tvShowMap.get(id);
         } else {
@@ -30,7 +30,7 @@ public class TvShowsManagerImpl implements TvShowsManager {
     }
 
     @Override
-    public void update(TvShow tvShow) {
+    public void update(TvShowWithDates tvShow) {
         if (tvShowMap.containsKey(tvShow.getId())) {
             tvShowMap.replace(tvShow.getId(), tvShow);
         } else {
@@ -40,12 +40,12 @@ public class TvShowsManagerImpl implements TvShowsManager {
     }
 
     @Override
-    public void delete(TvShow tvShow) {
+    public void delete(TvShowWithDates tvShow) {
         tvShowMap.remove(tvShow.getId());
     }
 
     @Override
-    public List<TvShow> listAllSeries() {
+    public List<TvShowWithDates> listAllSeries() {
         return new ArrayList<>(tvShowMap.values());
     }
 }
