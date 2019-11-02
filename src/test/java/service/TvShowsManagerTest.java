@@ -18,7 +18,7 @@ public class TvShowsManagerTest {
     private TimeService timeService;
 
     @InjectMocks
-    private TvShowsManager tvShowsManager;
+    private TvShowsManagerImpl tvShowsManager;
     private TvShowWithDates tvShowWithDates;
     private LocalDateTime currentTime;
 
@@ -84,7 +84,8 @@ public class TvShowsManagerTest {
     }
 
     @Test
-    public void ReadingTvShowChangesLastAccessDate() {
+    public void ReadingTvShowChangesLastAccessDateIfEnabled() {
+        tvShowsManager.setLastAccessDateEnabled(true);
         tvShowsManager.create(tvShowWithDates);
         tvShowsManager.read(1);
         assertNotNull(tvShowWithDates.getLastAccessDate());
@@ -92,10 +93,30 @@ public class TvShowsManagerTest {
     }
 
     @Test
-    public void CreatedTvShowHasCreationDate() {
+    public void ReadingTvShowDoesNotChangeLastAccessDateIfDisabled() {
+        tvShowsManager.setCreationTimeEnabled(false); //this is necessary to satisfy the test, without it the .getCurrentTime() method will be invoked by the create method
+        tvShowsManager.setLastAccessDateEnabled(false);
+        tvShowsManager.create(tvShowWithDates);
+        TvShowWithDates createdShow = tvShowsManager.read(1);
+        verify(timeService,never()).getCurrentTime();
+        assertNull(createdShow.getLastAccessDate());
+    }
+
+    @Test
+    public void CreatedTvShowHasCreationDateIfEnabled() {
+        tvShowsManager.setCreationTimeEnabled(true);
         tvShowsManager.create(tvShowWithDates);
         assertNotNull(tvShowWithDates.getCreationDate());
         assertEquals(currentTime, tvShowWithDates.getCreationDate());
+    }
+
+    @Test
+    public void CreatedTvShowHasNoCreationDateIfDisabled() {
+        tvShowsManager.setCreationTimeEnabled(false);
+        tvShowsManager.create(tvShowWithDates);
+        TvShowWithDates createdShow = tvShowsManager.read(1);
+        verify(timeService, only()).getCurrentTime();
+        assertNull(createdShow.getCreationDate());
     }
 
 

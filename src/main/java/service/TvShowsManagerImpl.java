@@ -13,26 +13,32 @@ public class TvShowsManagerImpl implements TvShowsManager {
     private Map<Integer, TvShowWithDates> tvShowMap = new HashMap<>();
     private TimeService timeService = new TimeServiceImpl();
 
+    private boolean creationTimeEnabled = true;
+    private boolean lastAccessDateEnabled = true;
+    private boolean updateDateEnabled = true;
+
     @Override
     public void create(TvShowWithDates tvShow) {
         if(tvShowMap.containsKey(tvShow.getId())) {
             throw new IllegalArgumentException("Tv Show with id: " + tvShow.getId() + " already exists.");
-        } else {
+        } else if (creationTimeEnabled) {
             tvShow.setCreationDate(timeService.getCurrentTime());
             tvShowMap.put(tvShow.getId(), tvShow);
-        }
+        } else
+            tvShowMap.put(tvShow.getId(), tvShow);
 
     }
 
     @Override
     public TvShowWithDates read(Integer id) {
-        if (tvShowMap.containsKey(id)) {
+        if (tvShowMap.containsKey(id) && !lastAccessDateEnabled) {
+            return tvShowMap.get(id);
+        } else if (tvShowMap.containsKey(id) && lastAccessDateEnabled) {
             TvShowWithDates tvShowWithDates = tvShowMap.get(id);
             tvShowWithDates.setLastAccessDate(timeService.getCurrentTime());
             return tvShowMap.get(id);
-        } else {
+        } else
             throw new NullPointerException("Tv Show with id: " + id + " doesn't exist.");
-        }
     }
 
     @Override
@@ -53,5 +59,17 @@ public class TvShowsManagerImpl implements TvShowsManager {
     @Override
     public List<TvShowWithDates> listAllSeries() {
         return new ArrayList<>(tvShowMap.values());
+    }
+
+    public void setCreationTimeEnabled(boolean creationTimeEnabled) {
+        this.creationTimeEnabled = creationTimeEnabled;
+    }
+
+    public void setLastAccessDateEnabled(boolean lastAccessDateEnabled) {
+        this.lastAccessDateEnabled = lastAccessDateEnabled;
+    }
+
+    public void setUpdateDateEnabled(boolean updateDateEnabled) {
+        this.updateDateEnabled = updateDateEnabled;
     }
 }
