@@ -2,6 +2,8 @@ package service;
 
 import domain.TvShowWithDates;
 
+import java.sql.Time;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,6 +11,7 @@ import java.util.Map;
 
 public class TvShowsManagerImpl implements TvShowsManager {
     private Map<Integer, TvShowWithDates> tvShowMap = new HashMap<>();
+    private TimeService timeService = new TimeServiceImpl();
 
     @Override
     public void create(TvShowWithDates tvShow) {
@@ -23,6 +26,8 @@ public class TvShowsManagerImpl implements TvShowsManager {
     @Override
     public TvShowWithDates read(Integer id) {
         if (tvShowMap.containsKey(id)) {
+            TvShowWithDates tvShowWithDates = tvShowMap.get(id);
+            tvShowWithDates.setLastAccessDate(timeService.getCurrentTime());
             return tvShowMap.get(id);
         } else {
             throw new NullPointerException("Tv Show with id: " + id + " doesn't exist.");

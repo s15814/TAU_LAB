@@ -3,18 +3,36 @@ package service;
 import domain.*;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import java.time.LocalDateTime;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class TvShowsManagerTest {
+
+    @Mock
+    private TimeService timeService;
+
+    @InjectMocks
     private TvShowsManager tvShowsManager;
     private TvShowWithDates tvShowWithDates;
+    private LocalDateTime currentTime;
 
     @Before
     public void setUp() {
         tvShowsManager = new TvShowsManagerImpl();
 
         tvShowWithDates = new TvShowBuilder().byId(1).byTitle("Narcos").byNumberOfSeasons(4).byDirectorsName("Jose Padilha").byPlatform("Netflix").build();
+
+        currentTime = LocalDateTime.now();
+
+        MockitoAnnotations.initMocks(this);
+
+        when(timeService.getCurrentTime()).thenReturn(currentTime);
     }
 
     @Test
@@ -63,6 +81,14 @@ public class TvShowsManagerTest {
     @Test (expected = NullPointerException.class)
     public void UpdateNonExistentTvShow () {
         tvShowsManager.update(tvShowWithDates);
+    }
+
+    @Test
+    public void ReadingTvShowChangesLastAccessDate() {
+        tvShowsManager.create(tvShowWithDates);
+        tvShowsManager.read(1);
+        assertNotNull(tvShowWithDates.getLastAccessDate());
+        assertEquals(currentTime, tvShowWithDates.getLastAccessDate());
     }
 
 
