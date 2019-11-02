@@ -43,7 +43,10 @@ public class TvShowsManagerImpl implements TvShowsManager {
 
     @Override
     public void update(TvShowWithDates tvShow) {
-        if (tvShowMap.containsKey(tvShow.getId())) {
+        if (tvShowMap.containsKey(tvShow.getId()) && updateDateEnabled) {
+            tvShow.setUpdateDate(timeService.getCurrentTime());
+            tvShowMap.replace(tvShow.getId(), tvShow);
+        } else if (tvShowMap.containsKey(tvShow.getId()) && !updateDateEnabled) {
             tvShowMap.replace(tvShow.getId(), tvShow);
         } else {
             throw new NullPointerException("Tv Show: " + tvShow + " doesn't exist.");

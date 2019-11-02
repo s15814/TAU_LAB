@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.internal.verification.AtMost;
 
 import java.time.LocalDateTime;
 
@@ -117,6 +118,28 @@ public class TvShowsManagerTest {
         TvShowWithDates createdShow = tvShowsManager.read(1);
         verify(timeService, only()).getCurrentTime();
         assertNull(createdShow.getCreationDate());
+    }
+
+    @Test
+    public void UpdatedShowHasUpdateDateIfEnabled() {
+        tvShowsManager.setUpdateDateEnabled(true);
+        tvShowsManager.create(tvShowWithDates);
+        TvShowWithDates newShow = new TvShowBuilder().byId(1).byTitle("Lost").byNumberOfSeasons(6).byDirectorsName("Director's Name").byPlatform("TV").build();
+        tvShowsManager.update(newShow);
+        TvShowWithDates createdShow = tvShowsManager.read(1);
+        assertNotNull(createdShow.getUpdateDate());
+        assertEquals(currentTime, createdShow.getUpdateDate());
+    }
+
+    @Test
+    public void UpdatedShowHasNoUpdateDateIfDisabled() {
+        tvShowsManager.setUpdateDateEnabled(false);
+        tvShowsManager.create(tvShowWithDates);
+        TvShowWithDates newShow = new TvShowBuilder().byId(1).byTitle("Lost").byNumberOfSeasons(6).byDirectorsName("Director's Name").byPlatform("TV").build();
+        tvShowsManager.update(newShow);
+        TvShowWithDates createdShow = tvShowsManager.read(1);
+        verify(timeService, atMost(2)).getCurrentTime(); // at most twice, because it should be invoked once during creation, and then again during read, but not during update
+        assertNull(createdShow.getUpdateDate());
     }
 
 
