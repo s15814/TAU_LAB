@@ -18,6 +18,7 @@ public class TvShowsManagerImpl implements TvShowsManager {
         if(tvShowMap.containsKey(tvShow.getId())) {
             throw new IllegalArgumentException("Tv Show with id: " + tvShow.getId() + " already exists.");
         } else {
+            tvShow.setCreationDate(timeService.getCurrentTime());
             tvShowMap.put(tvShow.getId(), tvShow);
         }
 

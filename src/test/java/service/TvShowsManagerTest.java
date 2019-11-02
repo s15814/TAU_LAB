@@ -91,6 +91,13 @@ public class TvShowsManagerTest {
         assertEquals(currentTime, tvShowWithDates.getLastAccessDate());
     }
 
+    @Test
+    public void CreatedTvShowHasCreationDate() {
+        tvShowsManager.create(tvShowWithDates);
+        assertNotNull(tvShowWithDates.getCreationDate());
+        assertEquals(currentTime, tvShowWithDates.getCreationDate());
+    }
+
 
 
 
