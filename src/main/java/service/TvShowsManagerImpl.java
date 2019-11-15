@@ -63,6 +63,17 @@ public class TvShowsManagerImpl implements TvShowsManager {
     public List<TvShowWithDates> listAllSeries() {
         return new ArrayList<>(tvShowMap.values());
     }
+    @Override
+    public List<TvShowWithDates> findInTitle(String regex) {
+        if (regex == null) {
+            throw new IllegalArgumentException("Not looking for anything");
+        }
+        List<TvShowWithDates> result = new ArrayList<>();
+        tvShowMap.values().stream()
+                .filter(tvShowWithDates -> tvShowWithDates.getTitle().matches(regex))
+                .forEach(tvShowWithDates -> result.add(tvShowWithDates));
+        return result;
+    }
 
     public void setCreationTimeEnabled(boolean creationTimeEnabled) {
         this.creationTimeEnabled = creationTimeEnabled;

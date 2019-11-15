@@ -10,5 +10,6 @@ public interface TvShowsManager {
     void update(TvShowWithDates tvShowWithDates);
     void delete(TvShowWithDates tvShowWithDates);
     List<TvShowWithDates> listAllSeries();
+    List<TvShowWithDates> findInTitle(String regex);
 
 }

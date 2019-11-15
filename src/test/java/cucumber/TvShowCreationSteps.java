@@ -55,4 +55,23 @@ public class TvShowCreationSteps {
         TvShowWithDates createdShow = tvShowsManager.read(id);
         assertEquals(addedTvShow.getId(), createdShow.getId());
     }
+
+    @Given("series from the first example are in the database")
+    public void addTvShowsToDb() {
+        tvShowsManager.create(new TvShowBuilder().byId(1).byTitle("Lost").byNumberOfSeasons(2).byDirectorsName("Director").byPlatform("TV").build());
+        tvShowsManager.create(new TvShowBuilder().byId(2).byTitle("Game of Thrones").byNumberOfSeasons(6).byDirectorsName("OtherDirector").byPlatform("HBO").build());
+        tvShowsManager.create(new TvShowBuilder().byId(3).byTitle("The Walking Dead").byNumberOfSeasons(3).byDirectorsName("SomeDirector").byPlatform("TV").build());
+        tvShowsManager.create(new TvShowBuilder().byId(4).byTitle("The Witcher").byNumberOfSeasons(1).byDirectorsName("aDirector").byPlatform("Netflix").build());
+        tvShowsManager.create(new TvShowBuilder().byId(5).byTitle("The Boys").byNumberOfSeasons(1).byDirectorsName("AnotherDirector").byPlatform("Prime").build());
+    }
+
+    @When("i want to find how many titles start with the word {string}")
+    public void checkTvShowTitleForWords(String regex) {
+        tvShowList = tvShowsManager.findInTitle(regex);
+    }
+
+    @Then("i found out that {int} shows have that word in their title")
+    public void countWordAppearances (int number) {
+        assertEquals(number, tvShowList.size());
+    }
 }
