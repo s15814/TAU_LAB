@@ -5,6 +5,11 @@
   <artifactId>tvSeriesApp</artifactId>
   <packaging>jar</packaging>
   <version>1.0-SNAPSHOT</version>
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>2.2.1.RELEASE</version>
+  </parent>
   <name>tvSeriesApp</name>
   <url>http://maven.apache.org</url>
   <build>
@@ -33,6 +38,7 @@
       <version>3.1.0</version>
       <scope>test</scope>
     </dependency>
+    <!-- Cucumber -->
     <dependency>
       <groupId>io.cucumber</groupId>
       <artifactId>cucumber-junit</artifactId>
@@ -43,6 +49,16 @@
       <groupId>io.cucumber</groupId>
       <artifactId>cucumber-java</artifactId>
       <version>4.8.0</version>
+    </dependency>
+    <!-- Spring -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 </project>
