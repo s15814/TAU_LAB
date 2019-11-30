@@ -1,12 +1,11 @@
-package service;
+package tv.service;
 
-import domain.*;
+import tv.domain.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.internal.verification.AtMost;
 
 import java.time.LocalDateTime;
 
@@ -20,14 +19,14 @@ public class TvShowsManagerTest {
 
     @InjectMocks
     private TvShowsManagerImpl tvShowsManager;
-    private TvShowWithDates tvShowWithDates;
+    private TvShow tvShow;
     private LocalDateTime currentTime;
 
     @Before
     public void setUp() {
         tvShowsManager = new TvShowsManagerImpl();
 
-        tvShowWithDates = new TvShowBuilder().byId(1).byTitle("Narcos").byNumberOfSeasons(4).byDirectorsName("Jose Padilha").byPlatform("Netflix").build();
+        tvShow = new TvShowBuilder().byId(1).byTitle("Narcos").byNumberOfSeasons(4).byDirectorsName("Jose Padilha").byPlatform("Netflix").build();
 
         currentTime = LocalDateTime.now();
 
@@ -38,16 +37,16 @@ public class TvShowsManagerTest {
 
     @Test
     public void CreateNewTvShow() {
-        tvShowsManager.create(tvShowWithDates);
+        tvShowsManager.create(tvShow);
 
         assertEquals(1, tvShowsManager.listAllSeries().size());
     }
 
     @Test (expected = IllegalArgumentException.class)
     public void ShowWithIdAlreadyExists() {
-        TvShowWithDates newShow = new TvShowBuilder().byId(1).build();
+        TvShow newShow = new TvShowBuilder().byId(1).build();
 
-        tvShowsManager.create(tvShowWithDates);
+        tvShowsManager.create(tvShow);
         tvShowsManager.create(newShow);
     }
 
@@ -58,47 +57,47 @@ public class TvShowsManagerTest {
 
     @Test
     public void ReadTheTvShow() {
-        tvShowsManager.create(tvShowWithDates);
-        TvShowWithDates createdShow = tvShowsManager.read(1);
+        tvShowsManager.create(tvShow);
+        TvShow createdShow = tvShowsManager.read(1);
 
-        assertEquals(tvShowWithDates, createdShow);
+        assertEquals(tvShow, createdShow);
     }
 
     @Test (expected = NullPointerException.class)
     public void DeleteTvShow() {
-        tvShowsManager.create(tvShowWithDates);
-        tvShowsManager.delete(tvShowWithDates);
-        tvShowsManager.read(tvShowWithDates.getId());
+        tvShowsManager.create(tvShow);
+        tvShowsManager.delete(tvShow);
+        tvShowsManager.read(tvShow.getId());
     }
 
     @Test
     public void UpdateTvShow() {
-        tvShowsManager.create(tvShowWithDates);
-        TvShowWithDates newShow = new TvShowBuilder().byId(1).byTitle("Lost").byNumberOfSeasons(6).byDirectorsName("Director's Name").byPlatform("TV").build();
+        tvShowsManager.create(tvShow);
+        TvShow newShow = new TvShowBuilder().byId(1).byTitle("Lost").byNumberOfSeasons(6).byDirectorsName("Director's Name").byPlatform("TV").build();
         tvShowsManager.update(newShow);
         assertEquals("Lost", tvShowsManager.read(1).getTitle());
     }
 
     @Test (expected = NullPointerException.class)
     public void UpdateNonExistentTvShow () {
-        tvShowsManager.update(tvShowWithDates);
+        tvShowsManager.update(tvShow);
     }
 
     @Test
     public void ReadingTvShowChangesLastAccessDateIfEnabled() {
         tvShowsManager.setLastAccessDateEnabled(true);
-        tvShowsManager.create(tvShowWithDates);
+        tvShowsManager.create(tvShow);
         tvShowsManager.read(1);
-        assertNotNull(tvShowWithDates.getLastAccessDate());
-        assertEquals(currentTime, tvShowWithDates.getLastAccessDate());
+        assertNotNull(tvShow.getLastAccessDate());
+        assertEquals(currentTime, tvShow.getLastAccessDate());
     }
 
     @Test
     public void ReadingTvShowDoesNotChangeLastAccessDateIfDisabled() {
         tvShowsManager.setCreationTimeEnabled(false); //this is necessary to satisfy the test, without it the .getCurrentTime() method will be invoked by the create method
         tvShowsManager.setLastAccessDateEnabled(false);
-        tvShowsManager.create(tvShowWithDates);
-        TvShowWithDates createdShow = tvShowsManager.read(1);
+        tvShowsManager.create(tvShow);
+        TvShow createdShow = tvShowsManager.read(1);
         verify(timeService,never()).getCurrentTime();
         assertNull(createdShow.getLastAccessDate());
     }
@@ -106,16 +105,16 @@ public class TvShowsManagerTest {
     @Test
     public void CreatedTvShowHasCreationDateIfEnabled() {
         tvShowsManager.setCreationTimeEnabled(true);
-        tvShowsManager.create(tvShowWithDates);
-        assertNotNull(tvShowWithDates.getCreationDate());
-        assertEquals(currentTime, tvShowWithDates.getCreationDate());
+        tvShowsManager.create(tvShow);
+        assertNotNull(tvShow.getCreationDate());
+        assertEquals(currentTime, tvShow.getCreationDate());
     }
 
     @Test
     public void CreatedTvShowHasNoCreationDateIfDisabled() {
         tvShowsManager.setCreationTimeEnabled(false);
-        tvShowsManager.create(tvShowWithDates);
-        TvShowWithDates createdShow = tvShowsManager.read(1);
+        tvShowsManager.create(tvShow);
+        TvShow createdShow = tvShowsManager.read(1);
         verify(timeService, only()).getCurrentTime();
         assertNull(createdShow.getCreationDate());
     }
@@ -123,10 +122,10 @@ public class TvShowsManagerTest {
     @Test
     public void UpdatedShowHasUpdateDateIfEnabled() {
         tvShowsManager.setUpdateDateEnabled(true);
-        tvShowsManager.create(tvShowWithDates);
-        TvShowWithDates newShow = new TvShowBuilder().byId(1).byTitle("Lost").byNumberOfSeasons(6).byDirectorsName("Director's Name").byPlatform("TV").build();
+        tvShowsManager.create(tvShow);
+        TvShow newShow = new TvShowBuilder().byId(1).byTitle("Lost").byNumberOfSeasons(6).byDirectorsName("Director's Name").byPlatform("TV").build();
         tvShowsManager.update(newShow);
-        TvShowWithDates createdShow = tvShowsManager.read(1);
+        TvShow createdShow = tvShowsManager.read(1);
         assertNotNull(createdShow.getUpdateDate());
         assertEquals(currentTime, createdShow.getUpdateDate());
     }
@@ -134,10 +133,10 @@ public class TvShowsManagerTest {
     @Test
     public void UpdatedShowHasNoUpdateDateIfDisabled() {
         tvShowsManager.setUpdateDateEnabled(false);
-        tvShowsManager.create(tvShowWithDates);
-        TvShowWithDates newShow = new TvShowBuilder().byId(1).byTitle("Lost").byNumberOfSeasons(6).byDirectorsName("Director's Name").byPlatform("TV").build();
+        tvShowsManager.create(tvShow);
+        TvShow newShow = new TvShowBuilder().byId(1).byTitle("Lost").byNumberOfSeasons(6).byDirectorsName("Director's Name").byPlatform("TV").build();
         tvShowsManager.update(newShow);
-        TvShowWithDates createdShow = tvShowsManager.read(1);
+        TvShow createdShow = tvShowsManager.read(1);
         verify(timeService, atMost(2)).getCurrentTime(); // at most twice, because it should be invoked once during creation, and then again during read, but not during update
         assertNull(createdShow.getUpdateDate());
     }

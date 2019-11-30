@@ -1,16 +1,13 @@
-package service;
+package tv.service;
 
-import domain.TvShowWithDates;
-
-import java.sql.Time;
-import java.time.LocalDateTime;
+import tv.domain.TvShow;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class TvShowsManagerImpl implements TvShowsManager {
-    private Map<Integer, TvShowWithDates> tvShowMap = new HashMap<>();
+    private Map<Integer, TvShow> tvShowMap = new HashMap<>();
     private TimeService timeService = new TimeServiceImpl();
 
     private boolean creationTimeEnabled = true;
@@ -18,7 +15,7 @@ public class TvShowsManagerImpl implements TvShowsManager {
     private boolean updateDateEnabled = true;
 
     @Override
-    public void create(TvShowWithDates tvShow) {
+    public void create(TvShow tvShow) {
         if(tvShowMap.containsKey(tvShow.getId())) {
             throw new IllegalArgumentException("Tv Show with id: " + tvShow.getId() + " already exists.");
         } else if (creationTimeEnabled) {
@@ -30,19 +27,19 @@ public class TvShowsManagerImpl implements TvShowsManager {
     }
 
     @Override
-    public TvShowWithDates read(Integer id) {
+    public TvShow read(Integer id) {
         if (tvShowMap.containsKey(id) && !lastAccessDateEnabled) {
             return tvShowMap.get(id);
         } else if (tvShowMap.containsKey(id) && lastAccessDateEnabled) {
-            TvShowWithDates tvShowWithDates = tvShowMap.get(id);
-            tvShowWithDates.setLastAccessDate(timeService.getCurrentTime());
+            TvShow tvShow = tvShowMap.get(id);
+            tvShow.setLastAccessDate(timeService.getCurrentTime());
             return tvShowMap.get(id);
         } else
             throw new NullPointerException("Tv Show with id: " + id + " doesn't exist.");
     }
 
     @Override
-    public void update(TvShowWithDates tvShow) {
+    public void update(TvShow tvShow) {
         if (tvShowMap.containsKey(tvShow.getId()) && updateDateEnabled) {
             tvShow.setUpdateDate(timeService.getCurrentTime());
             tvShowMap.replace(tvShow.getId(), tvShow);
@@ -55,23 +52,23 @@ public class TvShowsManagerImpl implements TvShowsManager {
     }
 
     @Override
-    public void delete(TvShowWithDates tvShow) {
+    public void delete(TvShow tvShow) {
         tvShowMap.remove(tvShow.getId());
     }
 
     @Override
-    public List<TvShowWithDates> listAllSeries() {
+    public List<TvShow> listAllSeries() {
         return new ArrayList<>(tvShowMap.values());
     }
     @Override
-    public List<TvShowWithDates> findInTitle(String regex) {
+    public List<TvShow> findInTitle(String regex) {
         if (regex == null) {
             throw new IllegalArgumentException("Not looking for anything");
         }
-        List<TvShowWithDates> result = new ArrayList<>();
+        List<TvShow> result = new ArrayList<>();
         tvShowMap.values().stream()
-                .filter(tvShowWithDates -> tvShowWithDates.getTitle().matches(regex))
-                .forEach(tvShowWithDates -> result.add(tvShowWithDates));
+                .filter(tvShow -> tvShow.getTitle().matches(regex))
+                .forEach(tvShow -> result.add(tvShow));
         return result;
     }
 

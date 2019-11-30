@@ -1,4 +1,4 @@
-package domain;
+package tv.domain;
 
 public class TvShowBuilder {
     private int id;
@@ -31,14 +31,14 @@ public class TvShowBuilder {
         return this;
     }
 
-    public TvShowWithDates build() {
-        TvShowWithDates tvShowWithDates = new TvShowWithDates();
-        tvShowWithDates.setId(id);
-        tvShowWithDates.setTitle(title);
-        tvShowWithDates.setNumberOfSeasons(numberOfSeasons);
-        tvShowWithDates.setDirectorsName(directorsName);
-        tvShowWithDates.setPlatform(platform);
-        return tvShowWithDates;
+    public TvShow build() {
+        TvShow TvShow = new TvShow();
+        TvShow.setId(id);
+        TvShow.setTitle(title);
+        TvShow.setNumberOfSeasons(numberOfSeasons);
+        TvShow.setDirectorsName(directorsName);
+        TvShow.setPlatform(platform);
+        return TvShow;
     }
 
 

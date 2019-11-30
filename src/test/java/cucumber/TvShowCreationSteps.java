@@ -1,13 +1,12 @@
 package cucumber;
 
-import cucumber.api.java.en.And;
-import domain.TvShowBuilder;
-import domain.TvShowWithDates;
+import tv.domain.TvShow;
+import tv.domain.TvShowBuilder;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import service.TvShowsManager;
-import service.TvShowsManagerImpl;
+import tv.service.TvShowsManager;
+import tv.service.TvShowsManagerImpl;
 
 import java.util.List;
 
@@ -16,8 +15,8 @@ import static org.junit.Assert.assertEquals;
 public class TvShowCreationSteps {
     private TvShowsManager tvShowsManager;
     private TvShowBuilder tvShowBuilder;
-    private List<TvShowWithDates> tvShowList;
-    private TvShowWithDates addedTvShow;
+    private List<TvShow> tvShowList;
+    private TvShow addedTvShow;
 
     public TvShowCreationSteps(){
         tvShowBuilder = new TvShowBuilder();
@@ -52,7 +51,7 @@ public class TvShowCreationSteps {
 
     @Then("it will exist with a given id {int} in the database")
     public void tvShowAddedCorrectly(Integer id){
-        TvShowWithDates createdShow = tvShowsManager.read(id);
+        TvShow createdShow = tvShowsManager.read(id);
         assertEquals(addedTvShow.getId(), createdShow.getId());
     }
 

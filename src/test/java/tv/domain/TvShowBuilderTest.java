@@ -1,4 +1,4 @@
-package domain;
+package tv.domain;
 
 import org.junit.Before;
 import org.junit.Test;

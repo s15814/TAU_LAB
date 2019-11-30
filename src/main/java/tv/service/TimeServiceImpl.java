@@ -1,4 +1,4 @@
-package service;
+package tv.service;
 
 import java.time.LocalDateTime;
 
