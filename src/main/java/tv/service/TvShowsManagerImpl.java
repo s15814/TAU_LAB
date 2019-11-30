@@ -1,11 +1,13 @@
 package tv.service;
 
+import org.springframework.stereotype.Service;
 import tv.domain.TvShow;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Service
 public class TvShowsManagerImpl implements TvShowsManager {
     private Map<Integer, TvShow> tvShowMap = new HashMap<>();
     private TimeService timeService = new TimeServiceImpl();
