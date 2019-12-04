@@ -47,4 +47,14 @@ public class TvShowController {
     public void deleteTvShow(@PathVariable Integer id) {
         tvShowsManager.delete(tvShowsManager.read(id));
     }
+
+    @PostMapping("")
+    public void createTvShow(@RequestBody TvShow tvShow) {
+        tvShowsManager.create(tvShow);
+    }
+
+    @PutMapping("")
+    public void updateTvShow(@RequestBody TvShow tvShow) {
+        tvShowsManager.update(tvShow);
+    }
 }
