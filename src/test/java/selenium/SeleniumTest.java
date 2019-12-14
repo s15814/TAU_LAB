@@ -4,7 +4,6 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.TestMethodOrder;
@@ -17,7 +16,7 @@ import org.openqa.selenium.interactions.Actions;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class SeleniumTest {
-    String email = "someemail1234@email.com";
+    String email = "someemail12345@email.com";
     String url = "http://automationpractice.com/";
     String password = "P4ssw0rd$";
     private WebDriver driver;
@@ -112,6 +111,7 @@ public class SeleniumTest {
     @Order(3)
     public void loginShouldBeSuccessful() throws InterruptedException {
         driver.get(url);
+        driver.manage().deleteAllCookies();
         driver.findElement(By.xpath("//*[@id=\"header\"]/div[2]/div/div/nav/div[1]/a")).click();
         Thread.sleep(500);
 
@@ -127,6 +127,7 @@ public class SeleniumTest {
     @Order(4)
     public void loginShouldFailWithWrongPassword() throws InterruptedException {
         driver.get(url);
+        driver.manage().deleteAllCookies();
         driver.findElement(By.xpath("//*[@id=\"header\"]/div[2]/div/div/nav/div[1]/a")).click();
         Thread.sleep(500);
 
@@ -136,7 +137,45 @@ public class SeleniumTest {
         Thread.sleep(4000);
 
         Assert.assertEquals(driver.findElement(By.xpath("//*[@id=\"center_column\"]/div[1]/ol/li")).getText(), "Authentication failed.");
+    }
 
+    @Test
+    @Order(5)
+    public void loginShouldBeSuccessfulInMaximizedWindow() throws InterruptedException {
+        driver.get(url);
+        driver.manage().deleteAllCookies();
+        driver.manage().window().maximize();
+        driver.findElement(By.xpath("//*[@id=\"header\"]/div[2]/div/div/nav/div[1]/a")).click();
+        Thread.sleep(500);
+
+        driver.findElement(By.xpath("//*[@id=\"email\"]")).sendKeys(email);
+        driver.findElement(By.xpath("//*[@id=\"passwd\"]")).sendKeys(password);
+        driver.findElement(By.xpath("//*[@id=\"SubmitLogin\"]/span")).click();
+        Thread.sleep(4000);
+
+        Assert.assertEquals(driver.findElement(By.xpath("//*[@id=\"header\"]/div[2]/div/div/nav/div[1]/a/span")).getText(), "Adam Kalw");
+    }
+
+    @Test
+    @Order(6)
+    public void registrationShouldFailWithEmptyFields() throws InterruptedException {
+        driver.get(url);
+        driver.findElement(By.xpath("//*[@id=\"header\"]/div[2]/div/div/nav/div[1]/a")).click();
+        Thread.sleep(500);
+        driver.findElement(By.xpath("//*[@id=\"email_create\"]")).sendKeys(email);
+        driver.findElement(By.xpath("//*[@id=\"SubmitCreate\"]/span")).click();
+        Thread.sleep(3000);
+        Assert.assertTrue(driver.getCurrentUrl().contains("#account-creation"));
+        driver.findElement(By.xpath("//*[@id=\"submitAccount\"]")).click();
+        Assert.assertEquals(driver.findElement(By.xpath("//*[@id=\"center_column\"]/div/ol")).getText(), 
+                "You must register at least one phone number.\n" +
+                "lastname is required.\n" +
+                "firstname is required.\n" +
+                "passwd is required.\n" +
+                "address1 is required.\n" +
+                "city is required.\n" +
+                "The Zip/Postal code you've entered is invalid. It must follow this format: 00000\n" +
+                "This country requires you to choose a State.");
     }
 
 
