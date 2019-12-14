@@ -1,9 +1,6 @@
 package selenium;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.TestMethodOrder;
@@ -13,7 +10,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
-
+@Ignore
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class SeleniumTest {
     String email = "someemail12345@email.com";
@@ -167,7 +164,7 @@ public class SeleniumTest {
         Thread.sleep(3000);
         Assert.assertTrue(driver.getCurrentUrl().contains("#account-creation"));
         driver.findElement(By.xpath("//*[@id=\"submitAccount\"]")).click();
-        Assert.assertEquals(driver.findElement(By.xpath("//*[@id=\"center_column\"]/div/ol")).getText(), 
+        Assert.assertEquals(driver.findElement(By.xpath("//*[@id=\"center_column\"]/div/ol")).getText(),
                 "You must register at least one phone number.\n" +
                 "lastname is required.\n" +
                 "firstname is required.\n" +
