@@ -4,6 +4,10 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
@@ -11,24 +15,12 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
 
-import java.util.Random;
-
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class SeleniumTest {
-    private WebDriver driver;
+    String email = "someemail1234@email.com";
     String url = "http://automationpractice.com/";
-    //method I found on stackoverflow to generate random email adresses
-    protected String getSaltString() {
-        String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-        StringBuilder salt = new StringBuilder();
-        Random rnd = new Random();
-        while (salt.length() < 10) { // length of the random string.
-            int index = (int) (rnd.nextFloat() * SALTCHARS.length());
-            salt.append(SALTCHARS.charAt(index));
-        }
-        String saltStr = salt.toString();
-        return saltStr;
-
-    }
+    String password = "P4ssw0rd$";
+    private WebDriver driver;
 
     @Before
     public void setup() {
@@ -37,9 +29,9 @@ public class SeleniumTest {
     }
 
     @Test
-    public void testNavigationBar() throws InterruptedException {
+    @Order(1)
+    public void navigationBarTest() throws InterruptedException {
         driver.get(url);
-        driver.manage().window().maximize();
         driver.findElement(By.xpath("//*[@id=\"block_top_menu\"]/ul/li[1]/a")).click();
         Assert.assertTrue(driver.getCurrentUrl().contains("id_category=3"));
         Thread.sleep(1000);
@@ -69,12 +61,12 @@ public class SeleniumTest {
     }
 
     @Test
-    public void testRegistrationShouldPass() throws InterruptedException {
+    @Order(2)
+    public void registrationShouldPass() throws InterruptedException {
         driver.get(url);
-        driver.manage().deleteAllCookies();
         driver.findElement(By.xpath("//*[@id=\"header\"]/div[2]/div/div/nav/div[1]/a")).click();
         Thread.sleep(500);
-        driver.findElement(By.xpath("//*[@id=\"email_create\"]")).sendKeys(getSaltString()+"@email.com");
+        driver.findElement(By.xpath("//*[@id=\"email_create\"]")).sendKeys(email);
         driver.findElement(By.xpath("//*[@id=\"SubmitCreate\"]/span")).click();
         Thread.sleep(3000);
         Assert.assertTrue(driver.getCurrentUrl().contains("#account-creation"));
@@ -82,7 +74,7 @@ public class SeleniumTest {
         driver.findElement(By.xpath("//*[@id=\"id_gender1\"]")).click();
         driver.findElement(By.xpath("//*[@id=\"customer_firstname\"]")).sendKeys("Adam");
         driver.findElement(By.xpath("//*[@id=\"customer_lastname\"]")).sendKeys("Kalw");
-        driver.findElement(By.xpath("//*[@id=\"passwd\"]")).sendKeys("P4ssword#");
+        driver.findElement(By.xpath("//*[@id=\"passwd\"]")).sendKeys(password);
 
         driver.findElement(By.xpath("//*[@id=\"days\"]")).click();
         driver.findElement(By.xpath("//*[@id=\"days\"]")).sendKeys("3");
@@ -116,8 +108,40 @@ public class SeleniumTest {
         Assert.assertEquals(driver.findElement(By.xpath("//*[@id=\"header\"]/div[2]/div/div/nav/div[1]/a/span")).getText(), "Adam Kalw");
     }
 
+    @Test
+    @Order(3)
+    public void loginShouldBeSuccessful() throws InterruptedException {
+        driver.get(url);
+        driver.findElement(By.xpath("//*[@id=\"header\"]/div[2]/div/div/nav/div[1]/a")).click();
+        Thread.sleep(500);
+
+        driver.findElement(By.xpath("//*[@id=\"email\"]")).sendKeys(email);
+        driver.findElement(By.xpath("//*[@id=\"passwd\"]")).sendKeys(password);
+        driver.findElement(By.xpath("//*[@id=\"SubmitLogin\"]/span")).click();
+        Thread.sleep(4000);
+
+        Assert.assertEquals(driver.findElement(By.xpath("//*[@id=\"header\"]/div[2]/div/div/nav/div[1]/a/span")).getText(), "Adam Kalw");
+    }
+
+    @Test
+    @Order(4)
+    public void loginShouldFailWithWrongPassword() throws InterruptedException {
+        driver.get(url);
+        driver.findElement(By.xpath("//*[@id=\"header\"]/div[2]/div/div/nav/div[1]/a")).click();
+        Thread.sleep(500);
+
+        driver.findElement(By.xpath("//*[@id=\"email\"]")).sendKeys(email);
+        driver.findElement(By.xpath("//*[@id=\"passwd\"]")).sendKeys(password + "dupa");
+        driver.findElement(By.xpath("//*[@id=\"SubmitLogin\"]/span")).click();
+        Thread.sleep(4000);
+
+        Assert.assertEquals(driver.findElement(By.xpath("//*[@id=\"center_column\"]/div[1]/ol/li")).getText(), "Authentication failed.");
+
+    }
+
+
     @After
     public void cleanup() {
-        driver.close();
+        driver.quit();
     }
 }
